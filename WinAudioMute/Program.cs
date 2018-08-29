@@ -60,6 +60,12 @@ namespace WinAudioMute
             {
                 UnMute();
             }
+            // HACK
+            // for some reason the app hangs before exit after a mute/unmute call. I had to do this to get an immediate exit!
+            // Uncomment if you really need an immediate exit
+            //System.Diagnostics.Process.GetCurrentProcess().Kill(); 
+            // /END HACK
+            // If above is uncommented.. then the below isn't always reached...
             Environment.Exit(0);
         }
 

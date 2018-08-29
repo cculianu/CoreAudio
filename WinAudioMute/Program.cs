@@ -24,6 +24,18 @@ namespace WinAudioMute
 
         static void Main(string[] args)
         {
+            int exitcode = Main2(args);
+            // HACK
+            // for some reason the app hangs before exit after a mute/unmute call. I had to do this to get an immediate exit!
+            // Uncomment if you really need an immediate exit
+            //System.Diagnostics.Process.GetCurrentProcess().Kill(); 
+            // /END HACK
+            // If above is uncommented.. then the below isn't always reached...
+            Environment.Exit(exitcode);
+        }
+
+        internal static int Main2(string[] args)
+        {
             MMDeviceEnumerator denum = new MMDeviceEnumerator();
             // Print devs for testing
             if (args.Length > 0 && args[0] == "-p")
@@ -39,7 +51,7 @@ namespace WinAudioMute
                     System.Console.WriteLine("    Muted?: {0}  MasterVol: {1}  MasterVolScalar: {2}", vol.Mute,
                         vol.MasterVolumeLevel, vol.MasterVolumeLevelScalar);
                 }
-                Environment.Exit(0);
+                return 0;
             }
             //
 
@@ -49,24 +61,19 @@ namespace WinAudioMute
             {
                 AttachConsoleForCommandLineMode();
                 System.Console.Error.WriteLine("ERROR: Could not get default audio endpoint (no sound device?)");
-                Environment.Exit(1);
+                return 1;
             }
 
             if (args.Length > 0 && args[0].ToLower() == "mute")
-            { 
+            {
                 Mute();
             }
             else
             {
                 UnMute();
             }
-            // HACK
-            // for some reason the app hangs before exit after a mute/unmute call. I had to do this to get an immediate exit!
-            // Uncomment if you really need an immediate exit
-            //System.Diagnostics.Process.GetCurrentProcess().Kill(); 
-            // /END HACK
-            // If above is uncommented.. then the below isn't always reached...
-            Environment.Exit(0);
+
+            return 0;
         }
 
         private static void Mute()
